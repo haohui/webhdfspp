@@ -4,9 +4,9 @@
 using namespace webhdfspp;
 using namespace std::placeholders;
 
-static size_t print(const char *data, size_t size, size_t *total_written) {
+static size_t print(const char *data, size_t size, size_t *read_bytes) {
   std::cout << std::string(data, size);
-  *total_written += size;
+  *read_bytes = size;
   return size;
 }
 
@@ -40,7 +40,7 @@ int main(int, char *argv[]) {
   while (offset < stat.length) {
     size_t read_bytes = 0;
     err = is->PositionRead(InputStream::kUnlimitedReadBytes, offset,
-                           std::bind(print, _1, _2, &offset));
+                           std::bind(print, _1, _2, &read_bytes));
     offset += read_bytes;
   }
   delete fs;
